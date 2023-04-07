@@ -23,6 +23,10 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
+  async deleteUser(id:number): Promise<any> {
+    return await this.userRepository.delete(id);
+  }
+
   async updateUser(data: IUser, id:number): Promise<any> {
     const doc =  await this.userRepository.update(id, data);
     if(doc.affected > 0) {

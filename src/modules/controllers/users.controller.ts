@@ -1,11 +1,11 @@
-import { Body, Controller, Get, NotFoundException, Param, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query } from "@nestjs/common";
 import { IUser } from "../../interfaces/user.interface";
 import { UserEntity } from "../entitys/user.entity";
 import { UsersService } from "../services/users.service";
 
 @Controller("users")
 export class UsersController {
-  constructor(private readonly usersServices: UsersService) {}
+  constructor(private readonly usersServices: UsersService) { }
 
   @Get()
   async index(): Promise<UserEntity[]> {
@@ -13,7 +13,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id:number): Promise<UserEntity> {
+  async findById(@Param('id') id: number): Promise<UserEntity> {
     const entity = await this.usersServices.findById(id);
 
     if (!entity) {
@@ -32,5 +32,17 @@ export class UsersController {
   async update(@Body() user: IUser, @Query() id: number): Promise<any> {
     return this.usersServices.updateUser(user, id);
   }
+
+  @Delete(':id')
+  async delete(@Param('id') id: number): Promise<UserEntity> {
+    const entity = await this.usersServices.deleteUser(id);
+
+    if (!entity) {
+      throw new NotFoundException();
+    }
+
+    return entity;
+  }
+
 
 }
