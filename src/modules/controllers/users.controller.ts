@@ -1,5 +1,16 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query } from "@nestjs/common";
-import { IUser } from "../../interfaces/user.interface";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  Query,
+} from "@nestjs/common";
+import { ILogin, IUser } from "../../interfaces/user.interface";
+
 import { UserEntity } from "../entitys/user.entity";
 import { UsersService } from "../services/users.service";
 
@@ -12,8 +23,13 @@ export class UsersController {
     return this.usersServices.findAll();
   }
 
-  @Get(':id')
-  async findById(@Param('id') id: number): Promise<UserEntity> {
+  @Get("login")
+  async login(@Body() data: ILogin): Promise<any> {
+    return this.usersServices.loginUser(data);
+  }
+
+  @Get(":id")
+  async findById(@Param("id") id: number): Promise<UserEntity> {
     const entity = await this.usersServices.findById(id);
 
     if (!entity) {
@@ -33,16 +49,8 @@ export class UsersController {
     return this.usersServices.updateUser(user, id);
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: number): Promise<UserEntity> {
-    const entity = await this.usersServices.deleteUser(id);
-
-    if (!entity) {
-      throw new NotFoundException();
-    }
-
-    return entity;
+  @Delete("/delete/:id")
+  async delete(@Param("id") id: number): Promise<any> {
+    return this.usersServices.deleteUser(id);
   }
-
-
 }
