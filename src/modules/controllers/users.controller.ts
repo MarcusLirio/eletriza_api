@@ -13,6 +13,7 @@ import { ILogin, IUser } from "../../interfaces/user.interface";
 
 import { UserEntity } from "../entitys/user.entity";
 import { UsersService } from "../services/users.service";
+import { ResponseErrors } from "../utils/errors";
 
 @Controller("users")
 export class UsersController {
@@ -25,7 +26,11 @@ export class UsersController {
 
   @Get("login")
   async login(@Body() data: ILogin): Promise<any> {
-    return this.usersServices.loginUser(data);
+    const res = await this.usersServices.loginUser(data);
+
+    if(res?.statusCode)  return ResponseErrors(res)
+
+    return res
   }
 
   @Get(":id")
