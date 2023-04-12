@@ -10,12 +10,13 @@ import {
   Query,
 } from "@nestjs/common";
 import { ILogin, IUser } from "../../interfaces/user.interface";
+
 import { UserEntity } from "../entitys/user.entity";
 import { UsersService } from "../services/users.service";
 
 @Controller("users")
 export class UsersController {
-  constructor(private readonly usersServices: UsersService) {}
+  constructor(private readonly usersServices: UsersService) { }
 
   @Get()
   async index(): Promise<UserEntity[]> {
