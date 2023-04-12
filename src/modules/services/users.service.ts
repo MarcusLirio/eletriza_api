@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserEntity } from "src/modules/entitys/user.entity";
@@ -17,6 +17,15 @@ export class UsersService {
 
   async loginUser(data: ILogin): Promise<any> {
     const doc = await this.userRepository.findOne({ email: data.email });
+
+    if(!doc) throw new NotFoundException();
+
+    const res = {
+      doc,
+      token: "1234 voce esta autenticado"
+    }
+
+    return res
   }
 
   async findById(id: any): Promise<UserEntity> {

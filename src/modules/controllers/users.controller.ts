@@ -24,7 +24,11 @@ export class UsersController {
 
   @Get("login")
   async login(@Body() data: ILogin): Promise<any> {
-    return this.usersServices.loginUser(data);
+    const res = await this.usersServices.loginUser(data);
+
+    if (!res) {
+      throw new NotFoundException();
+    }
   }
 
   @Get(":id")
