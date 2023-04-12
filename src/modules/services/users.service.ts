@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotAcceptableException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserEntity } from "src/modules/entitys/user.entity";
@@ -9,20 +9,27 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity | any>
-  ) {}
+  ) { }
 
   async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find();
   }
 
   async loginUser(data: ILogin): Promise<any> {
-    const doc = await this.userRepository.findOne({ email: data.email });
+    if (!data?.email) throw new NotAcceptableException();
+    if (!data?.password) throw new NotAcceptableException();
 
-    if(!doc) throw new NotFoundException();
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email: data.email })
+      .getOne();
+
+    if (!user) throw new NotFoundException();
 
     const res = {
-      doc,
-      token: "1234 voce esta autenticado"
+      user,
+      token: "1234 voce esta autenticado",
+      statusCode: 200
     }
 
     return res
